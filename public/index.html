@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#14130F">
+<title>Gym sessions</title>
+<style>
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  margin: 0; background: #14130F; color: #F2EFE6;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 16px; line-height: 1.5;
+  padding: 14px 14px calc(28px + env(safe-area-inset-bottom));
+  max-width: 560px; margin-left: auto; margin-right: auto;
+}
+a { color: #E8A33D; }
+select {
+  font-family: inherit; font-size: 17px; color: #F2EFE6; width: 100%;
+  background: #1D1B16; border: 1px solid #2C2924; border-radius: 12px;
+  height: 52px; padding: 0 14px; appearance: none; -webkit-appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #8E8A7E 50%), linear-gradient(135deg, #8E8A7E 50%, transparent 50%);
+  background-position: calc(100% - 20px) 23px, calc(100% - 14px) 23px;
+  background-size: 6px 6px, 6px 6px; background-repeat: no-repeat;
+}
+.tagline { font-size: 13px; color: #8E8A7E; margin: 8px 2px 14px; }
+
+.card { background: #1D1B16; border-radius: 16px; padding: 20px 16px 18px; }
+.card.rest { background: #16201B; }
+.round { font-size: 13px; color: #8E8A7E; }
+.where { font-size: 25px; margin: 2px 0 12px; color: #E8A33D; }
+.card.rest .where { color: #7FC79B; }
+.clock { font-size: 78px; font-weight: 500; line-height: 0.95; margin: 0; letter-spacing: -0.03em; }
+.clock.hot { color: #E8A33D; }
+.card.rest .clock.hot { color: #7FC79B; }
+.track { height: 3px; background: #2C2924; border-radius: 2px; margin-top: 16px; overflow: hidden; }
+.track b { display: block; height: 100%; width: 0; background: #E8A33D; }
+.meta { font-size: 12px; color: #8E8A7E; display: flex; justify-content: space-between; margin-top: 12px; }
+
+.moves { margin-top: 14px; }
+.move { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #2C2924; }
+.move svg { flex: 0 0 92px; width: 92px; height: 66px; color: #CFC9B8; }
+.move .txt { font-size: 15px; min-width: 0; }
+.move .qty { color: #E8A33D; }
+.move .how { display: block; font-size: 12px; color: #8E8A7E; text-decoration: none; margin-top: 2px; }
+.plainline { padding: 9px 0; border-top: 1px solid #2C2924; font-size: 15px; }
+.card.rest .plainline { border-top-color: #24332B; }
+.nextup { padding: 9px 0; border-top: 1px solid #24332B; font-size: 15px; color: #7FC79B; }
+
+button {
+  font-family: inherit; font-size: 16px; color: #F2EFE6;
+  background: #1D1B16; border: 1px solid #2C2924; border-radius: 12px;
+  height: 52px; width: 100%; margin-top: 8px;
+}
+button:active { transform: scale(0.985); }
+#go { background: #E8A33D; color: #14130F; border: 0; font-weight: 600; height: 58px; font-size: 18px; }
+.two { display: flex; gap: 8px; }
+button.ghost { height: 40px; font-size: 14px; color: #8E8A7E; margin-top: 14px; }
+.awake { margin-top: 12px; font-size: 13px; color: #8E8A7E; }
+.awake.on { color: #8FC24A; }
+
+#rate { display: none; margin-top: 14px; background: #1D1B16; border-radius: 14px; padding: 14px; }
+#rate p { margin: 0 0 10px; font-size: 15px; }
+#rate .btns { display: flex; gap: 6px; }
+#rate .btns button { margin-top: 0; height: 48px; }
+.saved { font-size: 15px; color: #8FC24A; }
+.saved.warn { color: #E8A33D; }
+
+h2 { font-size: 14px; font-weight: 400; color: #8E8A7E; margin: 26px 0 6px; }
+.row { display: flex; justify-content: space-between; gap: 12px; padding: 9px 12px; border-radius: 10px; font-size: 15px; }
+.row.now { background: #1D1B16; color: #E8A33D; }
+.row.past { color: #8E8A7E; }
+.row.brk { font-size: 13px; color: #6E6A60; padding: 5px 12px; }
+.row.brk.now { background: #16201B; color: #7FC79B; }
+.sub { font-size: 12px; color: #8E8A7E; }
+.hrow { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border-radius: 10px; font-size: 15px; background: #1D1B16; margin-bottom: 6px; }
+.hn { color: #E8A33D; }
+.empty { font-size: 14px; color: #6E6A60; padding: 8px 2px; }
+.backup textarea {
+  display: none; width: 100%; margin-top: 8px; font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 12px; color: #F2EFE6; background: #1D1B16; border: 1px solid #2C2924;
+  border-radius: 12px; padding: 10px; resize: vertical;
+}
+#restorewrap { display: none; }
+#restorewrap textarea { display: block; }
+.backup p { margin: 10px 2px 0; }
+.sync { font-size: 14px; color: #8E8A7E; margin: 0 2px; }
+.sync.ok { color: #8FC24A; }
+.sync.warn { color: #E8A33D; }
+@media (prefers-reduced-motion: reduce) { animate { display: none; } }
+</style>
+</head>
+<body>
+
+<select id="picker" aria-label="Choose a session"></select>
+<div class="tagline" id="tagline"></div>
+
+<div class="card" id="card">
+  <div class="round" id="round">Ready</div>
+  <div class="where" id="where"></div>
+  <p class="clock" id="clock">00:00</p>
+  <div class="track"><b id="bar"></b></div>
+  <div class="meta"><span id="gone">0:00 elapsed</span><span id="togo"></span></div>
+  <div class="moves" id="moves"></div>
+</div>
+
+<button id="go">Start</button>
+<div class="two">
+  <button id="back">Previous</button>
+  <button id="skip">Next block</button>
+</div>
+<button id="reset" style="height:44px">Reset</button>
+
+<div id="rate">
+  <p>How hard did that feel?</p>
+  <div class="btns">
+    <button data-r="1">1</button><button data-r="2">2</button><button data-r="3">3</button><button data-r="4">4</button><button data-r="5">5</button>
+  </div>
+</div>
+
+<p class="awake" id="awake">Screen will stay awake once started.</p>
+
+<h2>Session plan</h2>
+<div id="plan"></div>
+
+<h2 id="histhead">History</h2>
+<div id="history"></div>
+
+<h2>Sync</h2>
+<p id="sync" class="sync">Checking the server…</p>
+<button id="resync" class="ghost">Sync now</button>
+
+<h2>Backup</h2>
+<div class="backup">
+  <div class="two">
+    <button id="showbackup">Show backup code</button>
+    <button id="showrestore">Restore</button>
+  </div>
+  <textarea id="backupbox" rows="3" readonly></textarea>
+  <div id="restorewrap">
+    <textarea id="restorebox" rows="3" placeholder="Paste a backup code here"></textarea>
+    <button id="dorestore">Restore from code</button>
+  </div>
+  <p id="backupmsg" class="sub"></p>
+</div>
+
+<script>
+/* ---------- animated stick figures ---------- */
+function loop(s, h) { return h ? (s[0] + ";" + s[1] + ";" + s[1] + ";" + s[0]) : (s[0] + ";" + s[1] + ";" + s[0]); }
+function kt(h) { return h ? "0;0.35;0.7;1" : "0;0.5;1"; }
+
+function fig(o) {
+  var dur = o.dur || "2.4s", hold = !!o.hold, k = kt(hold);
+  var s = '<svg viewBox="0 0 100 72" xmlns="http://www.w3.org/2000/svg" ' +
+    'stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none">';
+  if (o.ground !== false) { s += '<line x1="4" y1="66" x2="96" y2="66" stroke-width="1.5" opacity="0.3"/>'; }
+  if (o.deco) { s += o.deco; }
+  if (o.head) {
+    s += '<circle r="6" cx="' + o.head[0][0] + '" cy="' + o.head[0][1] + '">' +
+      '<animate attributeName="cx" values="' + loop([o.head[0][0], o.head[1][0]], hold) + '" keyTimes="' + k + '" dur="' + dur + '" repeatCount="indefinite"/>' +
+      '<animate attributeName="cy" values="' + loop([o.head[0][1], o.head[1][1]], hold) + '" keyTimes="' + k + '" dur="' + dur + '" repeatCount="indefinite"/></circle>';
+  }
+  for (var i = 0; i < o.paths.length; i++) {
+    var p = o.paths[i], w = p[2] ? ' stroke-width="' + p[2] + '"' : '';
+    s += '<path d="' + p[0] + '"' + w + '><animate attributeName="d" values="' + loop(p, hold) +
+      '" keyTimes="' + k + '" dur="' + dur + '" repeatCount="indefinite"/></path>';
+  }
+  return s + '</svg>';
+}
+
+var BENCH = '<rect x="18" y="47" width="58" height="7" stroke-width="2.5" opacity="0.7"/>';
+var BENCH_S = '<rect x="8" y="44" width="28" height="7" stroke-width="2.5" opacity="0.7"/>';
+var BOX = '<rect x="70" y="50" width="24" height="16" stroke-width="2.5" opacity="0.7"/>';
+var SLED = '<rect x="72" y="50" width="22" height="16" stroke-width="2.5" opacity="0.7"/><path d="M72 50 L68 32" stroke-width="2.5" opacity="0.7"/>';
+var SLED_L = '<rect x="6" y="50" width="22" height="16" stroke-width="2.5" opacity="0.7"/>';
+var TRX = '<path d="M50 3 L42 24 M50 3 L58 24" stroke-width="2" opacity="0.7"/>';
+var CABLE_HI = '<path d="M78 3 L78 16" stroke-width="2.5" opacity="0.7"/>';
+var PULLEY = '<path d="M44 3 L44 10" stroke-width="2.5" opacity="0.7"/>';
+var SEATLP = '<path d="M12 64 L28 40" stroke-width="2.5" opacity="0.7"/>';
+
+var ART = {
+
+/* ===== bodyweight push / core ===== */
+pressup: fig({ dur: "2.2s", head: [[22, 36], [22, 47]], paths: [
+  ["M30 39 L60 48 L88 61", "M30 50 L60 55 L88 63"],
+  ["M32 40 L34 52 L32 63", "M32 51 L47 56 L32 63"]] }),
+
+pike: fig({ dur: "2.2s", head: [[25, 47], [21, 57]], paths: [
+  ["M29 43 L52 17 L80 62", "M27 52 L50 21 L80 62"],
+  ["M29 43 L28 53 L27 63", "M27 52 L38 58 L27 63"]] }),
+
+inchworm: fig({ dur: "3.4s", hold: true, head: [[59, 43], [25, 41]], paths: [
+  ["M80 62 L71 33 L59 39", "M80 62 L53 51 L33 44"],
+  ["M59 39 L57 51 L55 63", "M33 44 L32 53 L31 63"]] }),
+
+climber: fig({ dur: "0.9s", head: [[21, 35], [21, 35]], paths: [
+  ["M28 38 L58 50", "M28 38 L58 50"],
+  ["M30 39 L30 63", "M30 39 L30 63"],
+  ["M58 50 L74 55 L87 62", "M58 50 L48 43 L44 59"],
+  ["M58 50 L48 43 L44 59", "M58 50 L74 55 L87 62"]] }),
+
+frontplank: fig({ dur: "3.4s", head: [[22, 38], [22, 40]], paths: [
+  ["M30 41 L58 51 L86 63", "M30 43 L58 52 L86 63"],
+  ["M30 41 L30 52 L30 63", "M30 43 L30 53 L30 63"]] }),
+
+sideplank: fig({ dur: "3s", head: [[25, 35], [25, 31]], paths: [
+  ["M14 63 L28 63 L30 45", "M14 63 L28 63 L30 41"],
+  ["M30 45 L58 55 L89 63", "M30 41 L58 50 L89 63"],
+  ["M31 44 L34 33 L36 23", "M31 40 L34 29 L36 18"]] }),
+
+hollow: fig({ dur: "3s", head: [[30, 31], [30, 35]], paths: [
+  ["M17 24 L26 30 L35 37", "M17 29 L26 34 L35 40"],
+  ["M35 37 L52 50 L66 45 L87 26", "M35 40 L52 53 L66 48 L87 31"]] }),
+
+superman: fig({ dur: "2.2s", head: [[30, 51], [30, 44]], paths: [
+  ["M18 47 L28 51 L37 53", "M16 37 L27 44 L37 48"],
+  ["M37 53 L52 57 L63 56 L87 51", "M37 48 L52 56 L63 51 L87 38"]] }),
+
+deadbug: fig({ dur: "2.8s", head: [[19, 51], [19, 51]], paths: [
+  ["M26 55 L44 56 L62 56", "M26 55 L44 56 L62 56"],
+  ["M30 55 L28 43 L27 31", "M30 55 L20 46 L13 37"],
+  ["M62 56 L67 39 L80 34", "M62 56 L76 53 L91 51"]] }),
+
+birddog: fig({ dur: "2.8s", head: [[22, 40], [22, 38]], paths: [
+  ["M30 43 L44 45 L58 46", "M30 41 L44 44 L58 45"],
+  ["M30 43 L28 54 L28 64", "M30 41 L20 37 L10 33"],
+  ["M58 46 L60 55 L62 64", "M58 45 L72 41 L86 37"]] }),
+
+reversecrunch: fig({ dur: "2.2s", head: [[15, 55], [15, 55]], paths: [
+  ["M22 59 L40 59 L54 57", "M22 59 L40 59 L58 45"],
+  ["M54 57 L48 43 L38 45", "M58 45 L46 30 L34 34"],
+  ["M31 59 L36 63", "M31 59 L36 63"]] }),
+
+kneeraise: fig({ dur: "2.6s", ground: false, deco: '<line x1="12" y1="9" x2="94" y2="9" stroke-width="3.5" opacity="0.8"/>', head: [[46, 29], [46, 29]], paths: [
+  ["M55 9 L55 30 L57 47", "M55 9 L55 30 L57 47"],
+  ["M57 47 L58 57 L56 67", "M57 47 L40 42 L33 52"]] }),
+
+russian: fig({ dur: "2.6s", head: [[33, 25], [33, 25]], paths: [
+  ["M37 30 L52 51", "M37 30 L52 51"],
+  ["M52 51 L42 58 L33 63", "M52 51 L42 58 L33 63"],
+  ["M39 34 L48 41 L58 38", "M39 34 L45 44 L51 54"],
+  ["M53 32 L64 43", "M45 49 L57 60", 5]] }),
+
+renegade: fig({ head: [[21, 38], [21, 38]], paths: [
+  ["M29 41 L59 51 L87 63", "M29 41 L59 51 L87 63"],
+  ["M33 42 L33 50 L33 57", "M33 42 L41 48 L35 53"],
+  ["M26 59 L40 59", "M28 55 L42 55", 5]] }),
+
+/* ===== bodyweight legs ===== */
+squat: fig({ dur: "2.4s", head: [[46, 10], [46, 23]], paths: [
+  ["M46 17 L47 34", "M46 30 L50 45"],
+  ["M47 34 L36 47 L36 63", "M50 45 L32 49 L36 63"],
+  ["M47 34 L58 47 L58 63", "M50 45 L63 49 L58 63"],
+  ["M46 20 L58 26", "M46 33 L68 31"]] }),
+
+lunge: fig({ dur: "2.6s", head: [[54, 10], [54, 15]], paths: [
+  ["M54 17 L55 36", "M54 22 L56 41"],
+  ["M55 36 L50 49 L50 63", "M56 41 L46 51 L46 63"],
+  ["M55 36 L60 49 L60 63", "M56 41 L74 56 L83 63"]] }),
+
+bridge: fig({ dur: "2.2s", head: [[15, 56], [15, 56]], paths: [
+  ["M22 58 L40 57 L56 53", "M22 58 L38 51 L56 34"],
+  ["M56 53 L70 51 L72 63", "M56 34 L70 43 L72 63"],
+  ["M56 53 L74 46 L89 40", "M56 34 L72 30 L89 23"]] }),
+
+cossack: fig({ dur: "3s", head: [[38, 16], [62, 16]], paths: [
+  ["M38 23 L40 43", "M62 23 L60 43"],
+  ["M40 43 L30 52 L32 63", "M60 43 L70 52 L68 63"],
+  ["M40 43 L62 57 L84 63", "M60 43 L38 57 L16 63"]] }),
+
+stepup: fig({ dur: "2.8s", deco: BOX, head: [[45, 15], [64, 5]], paths: [
+  ["M45 22 L47 35", "M64 12 L65 29"],
+  ["M47 35 L57 41 L63 42", "M65 29 L67 35 L67 42"],
+  ["M47 35 L42 49 L40 63", "M65 29 L52 35 L47 43"]] }),
+
+row: fig({ dur: "2.2s", ground: false, deco: '<line x1="12" y1="16" x2="94" y2="16" stroke-width="3.5" opacity="0.8"/>', head: [[36, 39], [40, 29]], paths: [
+  ["M41 41 L64 51 L89 60", "M45 31 L66 45 L89 57"],
+  ["M47 16 L45 29 L41 40", "M47 16 L36 25 L44 30"]] }),
+
+/* ===== dumbbell ===== */
+benchpress: fig({ ground: false, deco: BENCH, head: [[25, 43], [25, 43]], paths: [
+  ["M32 47 L62 47", "M32 47 L62 47"],
+  ["M62 47 L72 57 L78 66", "M62 47 L72 57 L78 66"],
+  ["M46 47 L48 33 L48 22", "M46 47 L57 39 L49 35"],
+  ["M40 22 L56 22", "M41 35 L57 35", 5]] }),
+
+shoulderpress: fig({ head: [[47, 16], [47, 16]], paths: [
+  ["M47 23 L47 44", "M47 23 L47 44"],
+  ["M47 44 L39 55 L39 66", "M47 44 L39 55 L39 66"],
+  ["M47 44 L55 55 L55 66", "M47 44 L55 55 L55 66"],
+  ["M47 27 L34 34 L36 25", "M47 27 L39 19 L41 8"],
+  ["M29 25 L43 25", "M34 8 L48 8", 5]] }),
+
+lateralraise: fig({ head: [[50, 16], [50, 16]], paths: [
+  ["M50 23 L50 45", "M50 23 L50 45"],
+  ["M50 45 L43 56 L43 66", "M50 45 L43 56 L43 66"],
+  ["M50 45 L57 56 L57 66", "M50 45 L57 56 L57 66"],
+  ["M50 27 L46 38 L44 49", "M50 27 L39 29 L28 30"],
+  ["M37 49 L51 49", "M21 30 L35 30", 5]] }),
+
+skullcrusher: fig({ ground: false, deco: BENCH, head: [[25, 43], [25, 43]], paths: [
+  ["M32 47 L62 47", "M32 47 L62 47"],
+  ["M62 47 L72 57 L78 66", "M62 47 L72 57 L78 66"],
+  ["M46 47 L48 31", "M46 47 L48 31"],
+  ["M48 31 L50 20", "M48 31 L36 34"],
+  ["M43 19 L57 19", "M29 34 L43 34", 5]] }),
+
+bentrow: fig({ head: [[25, 34], [25, 34]], paths: [
+  ["M32 37 L60 45", "M32 37 L60 45"],
+  ["M60 45 L56 56 L54 66", "M60 45 L56 56 L54 66"],
+  ["M38 39 L38 51 L38 59", "M38 39 L45 47 L38 51"],
+  ["M31 59 L45 59", "M31 51 L45 51", 5]] }),
+
+curl: fig({ head: [[47, 14], [47, 14]], paths: [
+  ["M47 21 L47 43", "M47 21 L47 43"],
+  ["M47 43 L40 55 L40 66", "M47 43 L40 55 L40 66"],
+  ["M47 43 L54 55 L54 66", "M47 43 L54 55 L54 66"],
+  ["M47 25 L44 39", "M47 25 L44 39"],
+  ["M44 39 L44 53", "M44 39 L55 31"],
+  ["M37 53 L51 53", "M48 31 L62 31", 5]] }),
+
+hammercurl: fig({ head: [[47, 14], [47, 14]], paths: [
+  ["M47 21 L47 43", "M47 21 L47 43"],
+  ["M47 43 L40 55 L40 66", "M47 43 L40 55 L40 66"],
+  ["M47 43 L54 55 L54 66", "M47 43 L54 55 L54 66"],
+  ["M47 25 L44 39", "M47 25 L44 39"],
+  ["M44 39 L44 53", "M44 39 L55 31"],
+  ["M44 47 L44 59", "M55 25 L55 37", 5]] }),
+
+reardelt: fig({ head: [[25, 34], [25, 34]], paths: [
+  ["M32 37 L60 45", "M32 37 L60 45"],
+  ["M60 45 L56 56 L54 66", "M60 45 L56 56 L54 66"],
+  ["M38 39 L40 51 L40 59", "M38 39 L35 46 L25 50"],
+  ["M33 59 L47 59", "M18 50 L32 50", 5]] }),
+
+rdl: fig({ dur: "2.8s", head: [[47, 12], [31, 27]], paths: [
+  ["M47 19 L49 39", "M35 31 L53 41"],
+  ["M49 39 L45 53 L45 66", "M53 41 L51 54 L49 66"],
+  ["M49 39 L55 53 L55 66", "M53 41 L59 54 L57 66"],
+  ["M47 24 L45 39 L45 46", "M39 33 L39 47 L39 57"],
+  ["M38 46 L52 46", "M32 57 L46 57", 5]] }),
+
+splitsquat: fig({ dur: "2.8s", deco: BOX, head: [[45, 12], [45, 21]], paths: [
+  ["M45 19 L47 37", "M45 28 L47 43"],
+  ["M47 37 L41 51 L41 66", "M47 43 L37 53 L41 66"],
+  ["M47 37 L63 46 L73 51", "M47 43 L61 55 L73 51"],
+  ["M45 24 L38 38 L38 46", "M45 33 L38 44 L38 50"],
+  ["M31 46 L45 46", "M31 50 L45 50", 5]] }),
+
+sumosquat: fig({ dur: "2.6s", head: [[47, 12], [47, 22]], paths: [
+  ["M47 19 L47 38", "M47 29 L47 44"],
+  ["M47 38 L34 52 L32 66", "M47 44 L30 50 L32 66"],
+  ["M47 38 L60 52 L62 66", "M47 44 L64 50 L62 66"],
+  ["M47 24 L46 38 L46 46", "M47 34 L46 44 L46 54"],
+  ["M40 46 L54 46", "M40 54 L54 54", 5]] }),
+
+hipthrust: fig({ deco: BENCH_S, head: [[15, 38], [15, 38]], paths: [
+  ["M22 45 L41 55", "M22 45 L45 41"],
+  ["M41 55 L57 55 L59 66", "M45 41 L59 51 L59 66"],
+  ["M35 51 L47 59", "M39 37 L51 45", 5]] }),
+
+farmers: fig({ dur: "1.4s", head: [[47, 12], [47, 12]], paths: [
+  ["M47 19 L47 43", "M47 19 L47 43"],
+  ["M47 43 L39 55 L34 66", "M47 43 L43 55 L47 66"],
+  ["M47 43 L55 55 L60 66", "M47 43 L51 55 L47 66"],
+  ["M47 24 L43 40 L43 51", "M47 24 L43 40 L43 51"],
+  ["M36 51 L50 51", "M36 51 L50 51", 5]] }),
+
+thruster: fig({ dur: "2.6s", head: [[47, 25], [47, 12]], paths: [
+  ["M47 32 L49 45", "M47 19 L47 41"],
+  ["M49 45 L37 51 L39 66", "M47 41 L41 53 L41 66"],
+  ["M49 45 L61 51 L59 66", "M47 41 L53 53 L53 66"],
+  ["M47 35 L38 35 L40 27", "M47 23 L42 15 L42 6"],
+  ["M33 27 L47 27", "M35 6 L49 6", 5]] }),
+
+/* ===== kettlebell ===== */
+kbswing: fig({ dur: "2s", head: [[32, 26], [44, 14]], paths: [
+  ["M36 30 L54 40", "M46 21 L50 40"],
+  ["M54 40 L50 54 L48 66", "M50 40 L46 54 L46 66"],
+  ["M54 40 L60 54 L58 66", "M50 40 L56 54 L56 66"],
+  ["M39 33 L44 44 L40 52", "M46 25 L54 30 L66 32"],
+  ["M34 52 L46 52", "M60 32 L72 32", 5]] }),
+
+kbcarry: fig({ dur: "1.4s", head: [[47, 12], [47, 12]], paths: [
+  ["M47 19 L47 43", "M47 19 L47 43"],
+  ["M47 43 L39 55 L34 66", "M47 43 L43 55 L47 66"],
+  ["M47 43 L55 55 L60 66", "M47 43 L51 55 L47 66"],
+  ["M47 25 L38 32 L44 26", "M47 25 L38 32 L44 26"],
+  ["M36 22 L48 22", "M36 22 L48 22", 5]] }),
+
+kbhalo: fig({ dur: "2.4s", head: [[47, 18], [47, 18]], paths: [
+  ["M47 25 L47 45", "M47 25 L47 45"],
+  ["M47 45 L40 56 L40 66", "M47 45 L40 56 L40 66"],
+  ["M47 45 L54 56 L54 66", "M47 45 L54 56 L54 66"],
+  ["M47 28 L36 22 L40 12", "M47 28 L58 22 L54 12"],
+  ["M34 10 L46 10", "M48 10 L60 10", 5]] }),
+
+/* ===== sled ===== */
+sledpush: fig({ dur: "1.6s", deco: SLED, head: [[22, 30], [22, 30]], paths: [
+  ["M28 34 L44 46", "M28 34 L44 46"],
+  ["M31 36 L48 36 L66 34", "M31 36 L48 36 L66 34"],
+  ["M44 46 L34 58 L26 66", "M44 46 L44 56 L40 66"],
+  ["M44 46 L54 56 L58 66", "M44 46 L50 56 L54 66"]] }),
+
+sleddrag: fig({ dur: "1.6s", deco: SLED_L, head: [[58, 22], [58, 22]], paths: [
+  ["M58 29 L54 46", "M58 29 L54 46"],
+  ["M57 33 L44 40 L28 50", "M57 33 L44 40 L28 50"],
+  ["M54 46 L62 56 L66 66", "M54 46 L56 56 L52 66"],
+  ["M54 46 L46 56 L42 66", "M54 46 L50 56 L54 66"]] }),
+
+/* ===== TRX / cable ===== */
+trxfallout: fig({ dur: "2.8s", deco: TRX, head: [[32, 30], [26, 38]], paths: [
+  ["M38 34 L56 52 L64 66", "M32 42 L54 56 L64 66"],
+  ["M39 32 L45 24 L50 16", "M33 40 L43 26 L50 14"]] }),
+
+trxyfly: fig({ dur: "2.6s", deco: TRX, head: [[33, 27], [37, 22]], paths: [
+  ["M37 31 L58 50 L67 66", "M41 26 L60 48 L67 66"],
+  ["M38 29 L46 22 L54 16", "M42 24 L52 14 L62 7"]] }),
+
+latpulldown: fig({ dur: "2.4s", ground: false, deco: PULLEY, head: [[44, 27], [44, 27]], paths: [
+  ["M44 33 L46 54 L46 66", "M44 33 L46 54 L46 66"],
+  ["M44 31 L44 20 L44 11", "M44 31 L34 25 L40 19"],
+  ["M30 11 L58 11", "M26 19 L54 19", 5]] }),
+
+pushdown: fig({ dur: "2.2s", deco: CABLE_HI, head: [[40, 16], [40, 16]], paths: [
+  ["M40 23 L40 44", "M40 23 L40 44"],
+  ["M40 44 L34 55 L34 66", "M40 44 L34 55 L34 66"],
+  ["M40 44 L46 55 L46 66", "M40 44 L46 55 L46 66"],
+  ["M40 27 L48 36", "M40 27 L48 36"],
+  ["M48 36 L58 28", "M48 36 L56 47"],
+  ["M58 28 L78 16", "M56 47 L78 16"]] }),
+
+facepull: fig({ dur: "2.4s", deco: '<path d="M92 14 L92 30" stroke-width="2.5" opacity="0.7"/>', head: [[38, 18], [38, 18]], paths: [
+  ["M38 25 L38 46", "M38 25 L38 46"],
+  ["M38 46 L32 56 L32 66", "M38 46 L32 56 L32 66"],
+  ["M38 46 L44 56 L44 66", "M38 46 L44 56 L44 66"],
+  ["M38 28 L54 25 L68 22", "M38 28 L46 16 L34 14"],
+  ["M68 22 L92 22", "M34 14 L92 22"]] }),
+
+/* ===== barbell ===== */
+backsquat: fig({ dur: "2.8s", head: [[47, 11], [47, 24]], paths: [
+  ["M47 21 L47 40", "M47 34 L50 46"],
+  ["M47 40 L39 53 L39 66", "M50 46 L34 50 L39 66"],
+  ["M47 40 L55 53 L55 66", "M50 46 L62 50 L55 66"],
+  ["M30 21 L64 21", "M30 34 L64 34", 5]] }),
+
+/* ===== mobility & flow ===== */
+catcow: fig({ dur: "3.4s", head: [[22, 36], [24, 47]], paths: [
+  ["M30 42 L44 48 L58 44", "M30 44 L44 34 L58 42"],
+  ["M30 42 L30 54 L30 65", "M30 44 L30 55 L30 65"],
+  ["M58 44 L59 55 L60 65", "M58 42 L59 54 L60 65"]] }),
+
+worldsgreatest: fig({ dur: "3.2s", hold: true, head: [[38, 31], [38, 25]], paths: [
+  ["M42 35 L54 45", "M42 29 L54 43"],
+  ["M54 45 L44 55 L42 66", "M54 43 L44 55 L42 66"],
+  ["M54 45 L72 58 L83 66", "M54 43 L72 58 L83 66"],
+  ["M43 37 L40 51 L38 63", "M43 31 L38 20 L34 9"]] }),
+
+ninetyninety: fig({ dur: "3.2s", head: [[32, 24], [32, 24]], paths: [
+  ["M36 30 L44 49", "M36 30 L44 49"],
+  ["M44 49 L26 52 L20 62", "M44 49 L28 57 L22 65"],
+  ["M44 49 L62 55 L74 59", "M44 49 L60 50 L72 45"]] }),
+
+openbook: fig({ dur: "3.4s", hold: true, head: [[24, 44], [24, 44]], paths: [
+  ["M30 47 L56 50 L82 54", "M30 47 L56 50 L82 54"],
+  ["M31 46 L46 44 L60 42", "M31 46 L38 30 L44 15"]] }),
+
+downdog: fig({ dur: "3.4s", head: [[34, 47], [34, 44]], paths: [
+  ["M52 21 L35 43 L28 64", "M54 16 L35 41 L28 64"],
+  ["M52 21 L67 43 L78 64", "M54 16 L69 41 L78 64"]] }),
+
+hipflexor: fig({ dur: "3.4s", hold: true, head: [[42, 20], [42, 15]], paths: [
+  ["M42 27 L46 45", "M42 22 L48 43"],
+  ["M46 45 L36 55 L34 66", "M48 43 L34 55 L34 66"],
+  ["M46 45 L62 60 L74 65", "M48 43 L64 62 L79 65"],
+  ["M43 30 L40 44 L38 54", "M43 25 L40 14 L38 5"]] }),
+
+hamstringsweep: fig({ dur: "3s", head: [[46, 14], [30, 30]], paths: [
+  ["M46 21 L48 41", "M34 34 L52 43"],
+  ["M48 41 L44 54 L44 66", "M52 43 L50 55 L48 66"],
+  ["M48 41 L54 54 L54 66", "M52 43 L58 55 L56 66"],
+  ["M46 25 L44 40 L44 50", "M37 36 L37 50 L37 62"]] })
+
+};
+
+function yt(q) { return "https://www.youtube.com/results?search_query=" + encodeURIComponent(q + " proper form"); }
+
+/* ---------- session builders ---------- */
+function C(r, w, s, lines) { return { r: r, w: w, s: s, lines: lines }; }
+function W(r, w, s, note, moves) { return { r: r, w: w, s: s, note: note, moves: moves }; }
+function R(w, next) { return { r: "60 second break", w: w, s: 60, rest: 1, next: next }; }
+function R30(w, next) { return { r: "30 second break", w: w, s: 30, rest: 1, next: next }; }
+
+var SESSIONS = [
+
+/* ========== 1 ========== */
+{ id: "dbfull", name: "Full body dumbbells", mins: 45, tag: "Weights + cardio", blocks: [
+  C("Warm-up", "Rower", 180, ["Easy building to moderate", "Long strokes, drive with the legs"]),
+  R("Move to the ski erg", "Ski erg intervals"),
+  C("Round 1", "Ski erg", 240, ["6 x 30s hard / 10s easy", "Drive with hips and lats"]),
+  R("Bench + dumbbells", "Push block"),
+  W("Round 1", "Push", 240, "3 rounds if you can. Last 2 reps should be a grind.", [
+    ["10", "DB bench press", "benchpress", "dumbbell bench press"],
+    ["10", "DB shoulder press", "shoulderpress", "seated dumbbell shoulder press"],
+    ["12", "DB lateral raises", "lateralraise", "dumbbell lateral raise"],
+    ["12", "DB skull crushers", "skullcrusher", "dumbbell skull crusher"]]),
+  R("Move to the rower", "Rower intervals"),
+  C("Round 2", "Rower", 240, ["4 x 45s hard / 15s easy", "Hold the split, don't fade"]),
+  R("Dumbbells for pulling", "Pull block"),
+  W("Round 2", "Pull", 240, "3 rounds if you can. Control the lowering on the curls.", [
+    ["10", "DB bent-over rows each side", "bentrow", "dumbbell bent over row"],
+    ["12", "DB bicep curls", "curl", "dumbbell bicep curl"],
+    ["12", "DB hammer curls", "hammercurl", "dumbbell hammer curl"],
+    ["12", "Rear delt flyes", "reardelt", "bent over rear delt fly"]]),
+  R("Move to the air bike", "Air bike intervals"),
+  C("Round 3", "Air bike", 240, ["4 x 30s hard / 30s easy", "Push and pull the handles"]),
+  R("Dumbbells + bench", "Leg block"),
+  W("Round 3", "Legs", 240, "Heaviest block of the night. 2-3 rounds.", [
+    ["12", "DB Romanian deadlifts", "rdl", "dumbbell romanian deadlift"],
+    ["8", "DB split squats each side", "splitsquat", "dumbbell split squat"],
+    ["12", "DB sumo squats", "sumosquat", "dumbbell sumo squat"],
+    ["12", "DB hip thrusts", "hipthrust", "dumbbell hip thrust"]]),
+  R("Move to the stair climber", "Steady climbing"),
+  C("Round 4", "Stair climber", 240, ["Steady hard, no hands on the rails", "Heel down on each step"]),
+  R("Heavy dumbbells", "Carry and core finisher"),
+  W("Round 4", "Carry + core", 240, "Go heavy on the carry — grip should be the limit.", [
+    ["40s", "Farmer's carry", "farmers", "farmers carry dumbbell"],
+    ["10", "DB thrusters", "thruster", "dumbbell thruster"],
+    ["8", "Renegade rows each side", "renegade", "renegade row"],
+    ["20", "Weighted Russian twists", "russian", "weighted russian twist"]]),
+  C("Cool down", "Easy spin", 120, ["Whatever machine is nearest", "Loosen calves, lats and hip flexors"])
+]},
+
+/* ========== 2 ========== */
+{ id: "bwcardio", name: "Cardio + bodyweight", mins: 45, tag: "Bodyweight", blocks: [
+  C("Warm-up", "Rower", 180, ["Easy building to moderate", "Long relaxed strokes"]),
+  R("Stay on the rower", "Rower intervals"),
+  C("Round 1", "Rower", 240, ["4 x 45s hard / 15s easy"]),
+  R("Find floor space", "Push and core block"),
+  W("Round 1", "Floor", 240, "As many rounds as possible", [
+    ["8", "Press-ups", "pressup", "push up"],
+    ["8", "Pike press-ups", "pike", "pike push up"],
+    ["8", "Inchworms", "inchworm", "inchworm walkout"],
+    ["20", "Mountain climbers", "climber", "mountain climber"]]),
+  R("Move to the ski erg", "Ski erg intervals"),
+  C("Round 2", "Ski erg", 240, ["8 x 20s hard / 10s easy"]),
+  R("Back to floor space", "Leg block"),
+  W("Round 2", "Floor", 240, "As many rounds as possible", [
+    ["15", "Air squats", "squat", "bodyweight air squat"],
+    ["10", "Reverse lunges each side", "lunge", "reverse lunge"],
+    ["12", "Single-leg glute bridges", "bridge", "single leg glute bridge"],
+    ["10", "Cossack squats, 5 each side", "cossack", "cossack squat"]]),
+  R("Move to the air bike", "Air bike intervals"),
+  C("Round 3", "Air bike", 240, ["4 x 30s hard / 30s easy"]),
+  R("Find a bar for rows", "Pull and core block"),
+  W("Round 3", "Floor", 240, "Only pulling work in the session — make it count", [
+    ["12", "Inverted rows", "row", "inverted row smith machine"],
+    ["10", "Hanging knee raises", "kneeraise", "hanging knee raise"],
+    ["30s", "Hollow hold", "hollow", "hollow body hold"],
+    ["10", "Supermans", "superman", "superman back extension"]]),
+  R("Move to the stair climber", "Steady climbing"),
+  C("Round 4", "Stair climber", 240, ["Steady hard, no hands on the rails", "Heel down on each step"]),
+  R("Find a box and floor space", "Core finisher"),
+  W("Round 4", "Floor", 240, "As many rounds as possible", [
+    ["12", "Step-ups each side", "stepup", "bodyweight step up"],
+    ["20", "Dead bugs, alternating", "deadbug", "dead bug"],
+    ["30s", "Side plank each side", "sideplank", "side plank"],
+    ["15", "Reverse crunches", "reversecrunch", "reverse crunch"]]),
+  C("Cool down", "Easy spin", 120, ["Whatever machine is nearest", "Loosen calves and lats"])
+]},
+
+/* ========== 3 ========== */
+{ id: "upperpp", name: "Upper body push / pull", mins: 45, tag: "Weights", blocks: [
+  C("Warm-up", "Ski erg", 180, ["Easy to moderate", "Shoulders warm before you load them"]),
+  R("Barbell + bench", "Heavy pressing"),
+  W("Block 1", "Heavy press", 240, "Rest 45s between sets. Go heavy.", [
+    ["5 x 5", "Barbell bench press", "benchpress", "barbell bench press"]]),
+  R("Stay at the rack", "Heavy rows"),
+  W("Block 2", "Heavy pull", 240, "Rest 45s between sets. Same weight across.", [
+    ["5 x 8", "Barbell bent-over rows", "bentrow", "barbell bent over row"]]),
+  R("Move to the rower", "Rower intervals"),
+  C("Block 3", "Rower", 240, ["5 x 30s hard / 20s easy"]),
+  R("Dumbbells + bench", "Shoulder superset"),
+  W("Block 4", "Shoulders", 240, "Superset, minimal rest. 3 rounds.", [
+    ["10", "DB shoulder press", "shoulderpress", "seated dumbbell shoulder press"],
+    ["14", "DB lateral raises", "lateralraise", "dumbbell lateral raise"]]),
+  R("Move to the cable stack", "Cable superset"),
+  W("Block 5", "Cables", 240, "Superset, 3 rounds. Squeeze at the end of each rep.", [
+    ["12", "Lat pulldowns", "latpulldown", "lat pulldown"],
+    ["15", "Face pulls", "facepull", "cable face pull"]]),
+  R("Move to the ski erg", "Ski erg intervals"),
+  C("Block 6", "Ski erg", 240, ["6 x 25s hard / 15s easy"]),
+  R("Dumbbells + cable", "Arms"),
+  W("Block 7", "Arms", 240, "Superset to failure on the last round.", [
+    ["12", "DB bicep curls", "curl", "dumbbell bicep curl"],
+    ["15", "Cable pushdowns", "pushdown", "cable tricep pushdown"]]),
+  R("Find floor space", "Core finisher"),
+  W("Block 8", "Core", 240, "Straight through, twice.", [
+    ["45s", "Front plank", "frontplank", "front plank"],
+    ["10", "Hanging knee raises", "kneeraise", "hanging knee raise"],
+    ["30s", "Side plank each side", "sideplank", "side plank"]]),
+  C("Cool down", "Easy spin", 120, ["Loosen lats, chest and forearms"])
+]},
+
+/* ========== 4 ========== */
+{ id: "legshinge", name: "Legs and hinge", mins: 45, tag: "Weights", blocks: [
+  C("Warm-up", "Air bike", 180, ["Easy to moderate", "Wake the hips up"]),
+  R("Mat space", "Hip and ankle prep"),
+  W("Warm-up 2", "Hip prep", 240, "Slow and controlled, no bouncing.", [
+    ["8 each side", "World's greatest stretch", "worldsgreatest", "worlds greatest stretch"],
+    ["10", "Cat-cow", "catcow", "cat cow"],
+    ["12", "Glute bridges", "bridge", "glute bridge"]]),
+  R("Barbell + rack", "Back squats"),
+  W("Block 1", "Squat", 240, "5 sets. Build to a heavy but clean 5.", [
+    ["5 x 5", "Barbell back squats", "backsquat", "barbell back squat"]]),
+  R("Barbell stays", "Deadlift pattern"),
+  W("Block 2", "Hinge", 240, "4 sets, slow lowering. Feel the hamstrings.", [
+    ["4 x 8", "Barbell Romanian deadlifts", "rdl", "barbell romanian deadlift"]]),
+  R("Move to the rower", "Rower intervals"),
+  C("Block 3", "Rower", 240, ["4 x 40s hard / 20s easy", "Legs will be heavy — that's the point"]),
+  R("Dumbbells + bench", "Single leg work"),
+  W("Block 4", "Single leg", 240, "3 rounds. Step back into position, don't drop.", [
+    ["8 each side", "DB split squats", "splitsquat", "dumbbell split squat"],
+    ["12 each side", "DB step-ups", "stepup", "dumbbell step up"]]),
+  R("Bench + dumbbell", "Glute work"),
+  W("Block 5", "Glutes", 240, "3 rounds, 2s pause at the top.", [
+    ["12", "DB hip thrusts", "hipthrust", "dumbbell hip thrust"],
+    ["12", "DB sumo squats", "sumosquat", "dumbbell sumo squat"]]),
+  R("Kettlebell", "Swing finisher"),
+  W("Block 6", "Swings", 240, "8 rounds of 20s work / 10s rest.", [
+    ["20s", "Kettlebell swings", "kbswing", "russian kettlebell swing"]]),
+  R("Mat space", "Core and lower back"),
+  W("Block 7", "Core", 240, "Twice through.", [
+    ["12", "Supermans", "superman", "superman back extension"],
+    ["45s", "Front plank", "frontplank", "front plank"],
+    ["10 each side", "Bird dogs", "birddog", "bird dog exercise"]]),
+  C("Cool down", "Stretch", 120, ["Hip flexors and hamstrings", "Hold each for 30s"])
+]},
+
+/* ========== 5 ========== */
+{ id: "kbcondition", name: "Kettlebell conditioning", mins: 30, tag: "Kettlebell", blocks: [
+  C("Warm-up", "Rower", 180, ["Easy building", "Open the hips"]),
+  R("One kettlebell", "Swing intervals"),
+  W("Block 1", "Swings", 240, "6 rounds of 30s work / 10s rest.", [
+    ["30s", "Kettlebell swings", "kbswing", "russian kettlebell swing"]]),
+  R("Same kettlebell", "Halo and squat"),
+  W("Block 2", "Shoulders + legs", 240, "3 rounds straight through.", [
+    ["10", "Kettlebell halos", "kbhalo", "kettlebell halo"],
+    ["12", "Sumo squats", "sumosquat", "kettlebell sumo squat"],
+    ["10 each side", "Single-arm rows", "bentrow", "kettlebell single arm row"]]),
+  R("Move to the ski erg", "Ski erg intervals"),
+  C("Block 3", "Ski erg", 240, ["6 x 25s hard / 15s easy"]),
+  R("Two kettlebells", "Carries"),
+  W("Block 4", "Carry", 240, "4 rounds: 40s carry, 20s rest.", [
+    ["40s", "Front rack carry", "kbcarry", "kettlebell front rack carry"]]),
+  R("Floor space", "Core finisher"),
+  W("Block 5", "Core", 240, "Twice through.", [
+    ["20", "Russian twists", "russian", "weighted russian twist"],
+    ["30s", "Hollow hold", "hollow", "hollow body hold"],
+    ["20", "Dead bugs", "deadbug", "dead bug"]]),
+  C("Cool down", "Stretch", 120, ["Hamstrings, lats and forearms"])
+]},
+
+/* ========== 6 ========== */
+{ id: "sledcarry", name: "Sled and carries", mins: 30, tag: "Dynamic", blocks: [
+  C("Warm-up", "Air bike", 180, ["Easy building to moderate"]),
+  R("Load the sled", "Sled pushes"),
+  W("Block 1", "Sled push", 240, "6 lengths. Walk back as your rest.", [
+    ["6 lengths", "Sled push", "sledpush", "sled push"]]),
+  R("Straps on the sled", "Sled drags"),
+  W("Block 2", "Sled drag", 240, "6 lengths backwards. Stay low, heels down.", [
+    ["6 lengths", "Backward sled drag", "sleddrag", "backward sled drag"]]),
+  R("Heavy dumbbells", "Carry medley"),
+  W("Block 3", "Carries", 240, "4 rounds: 40s on, 20s rest. Alternate the two.", [
+    ["40s", "Farmer's carry", "farmers", "farmers carry dumbbell"],
+    ["40s", "Front rack carry", "kbcarry", "kettlebell front rack carry"]]),
+  R("Move to the rower", "Rower intervals"),
+  C("Block 4", "Rower", 240, ["4 x 40s hard / 20s easy"]),
+  R("Floor space", "Core finisher"),
+  W("Block 5", "Core", 240, "Twice through.", [
+    ["45s", "Front plank", "frontplank", "front plank"],
+    ["10 each side", "Bird dogs", "birddog", "bird dog exercise"],
+    ["15", "Reverse crunches", "reversecrunch", "reverse crunch"]]),
+  C("Cool down", "Stretch", 120, ["Calves, hip flexors and traps"])
+]},
+
+/* ========== 7 ========== */
+{ id: "engine", name: "Engine builder", mins: 45, tag: "Cardio", blocks: [
+  C("Warm-up", "Rower", 180, ["Easy building to moderate"]),
+  R("Stay on the rower", "Long intervals"),
+  C("Block 1", "Rower", 240, ["2 x 2 min at threshold", "20s easy between"]),
+  R("Move to the ski erg", "Short intervals"),
+  C("Block 2", "Ski erg", 240, ["8 x 20s hard / 10s easy"]),
+  R("Move to the air bike", "Long intervals"),
+  C("Block 3", "Air bike", 240, ["4 x 45s hard / 15s easy"]),
+  R("Floor space", "Movement break"),
+  W("Block 4", "Movement", 240, "Twice through, keep moving.", [
+    ["10", "Inchworms", "inchworm", "inchworm walkout"],
+    ["15", "Air squats", "squat", "bodyweight air squat"],
+    ["20", "Mountain climbers", "climber", "mountain climber"]]),
+  R("Move to the stair climber", "Steady climbing"),
+  C("Block 5", "Stair climber", 240, ["Steady hard the whole block", "No hands on the rails"]),
+  R("Move to the rower", "Sprint intervals"),
+  C("Block 6", "Rower", 240, ["6 x 20s sprint / 20s easy"]),
+  R("Move to the ski erg", "Descending intervals"),
+  C("Block 7", "Ski erg", 240, ["60s / 45s / 30s / 20s hard", "Equal rest after each"]),
+  R("Move to the air bike", "Final push"),
+  C("Block 8", "Air bike", 240, ["4 min continuous", "Hold the highest pace you can finish"]),
+  C("Cool down", "Easy spin", 120, ["Very easy, let the heart rate drop"])
+]},
+
+/* ========== 8 ========== */
+{ id: "mobility", name: "Mobility and flexibility", mins: 30, tag: "Flexibility", blocks: [
+  C("Warm-up", "Easy spin", 240, ["Bike or rower, very easy", "Just raising the temperature"]),
+  W("Block 1", "Spine", 240, "Slow, breathe into each one.", [
+    ["12", "Cat-cow", "catcow", "cat cow"],
+    ["8 each side", "Open book rotations", "openbook", "open book thoracic rotation"]]),
+  W("Block 2", "Hips", 240, "Hold, don't bounce.", [
+    ["10 each side", "90/90 hip switches", "ninetyninety", "90 90 hip switch"],
+    ["45s each side", "Hip flexor stretch", "hipflexor", "kneeling hip flexor stretch"]]),
+  W("Block 3", "Posterior chain", 240, "Soft knees, hinge from the hips.", [
+    ["10", "Standing hamstring sweeps", "hamstringsweep", "standing hamstring stretch"],
+    ["45s", "Downward dog", "downdog", "downward dog"]]),
+  W("Block 4", "Full body flow", 240, "Move between them continuously.", [
+    ["8 each side", "World's greatest stretch", "worldsgreatest", "worlds greatest stretch"],
+    ["8", "Inchworms", "inchworm", "inchworm walkout"]]),
+  W("Block 5", "Stability", 240, "Slow and controlled.", [
+    ["10 each side", "Bird dogs", "birddog", "bird dog exercise"],
+    ["12", "Glute bridges", "bridge", "glute bridge"],
+    ["30s each side", "Side plank", "sideplank", "side plank"]]),
+  W("Block 6", "Calf and achilles", 240, "Gentle. Stop short of any sharp sensation.", [
+    ["45s each side", "Straight-leg calf stretch", "downdog", "standing calf stretch wall"],
+    ["45s each side", "Bent-knee calf stretch", "hipflexor", "soleus stretch"]]),
+  C("Cool down", "Breathe", 120, ["Lie flat, slow nasal breathing", "Five minutes if you have it"])
+]},
+
+/* ========== 9 ========== */
+{ id: "core", name: "Core and anti-rotation", mins: 30, tag: "Bodyweight", blocks: [
+  C("Warm-up", "Rower", 180, ["Easy building to moderate"]),
+  R("Mat space", "Bracing"),
+  W("Block 1", "Bracing", 240, "3 rounds. Ribs down, glutes on.", [
+    ["45s", "Front plank", "frontplank", "front plank"],
+    ["30s", "Hollow hold", "hollow", "hollow body hold"]]),
+  R("Stay on the mat", "Anti-rotation"),
+  W("Block 2", "Anti-rotation", 240, "3 rounds, slow.", [
+    ["10 each side", "Bird dogs", "birddog", "bird dog exercise"],
+    ["20", "Dead bugs", "deadbug", "dead bug"],
+    ["30s each side", "Side plank", "sideplank", "side plank"]]),
+  R("Move to the ski erg", "Ski erg intervals"),
+  C("Block 3", "Ski erg", 240, ["6 x 25s hard / 15s easy"]),
+  R("Find a bar", "Hanging work"),
+  W("Block 4", "Hanging", 240, "3 rounds, controlled lowering.", [
+    ["10", "Hanging knee raises", "kneeraise", "hanging knee raise"],
+    ["15", "Reverse crunches", "reversecrunch", "reverse crunch"]]),
+  R("Dumbbell + mat", "Loaded finisher"),
+  W("Block 5", "Loaded core", 240, "Twice through.", [
+    ["20", "Weighted Russian twists", "russian", "weighted russian twist"],
+    ["8 each side", "Renegade rows", "renegade", "renegade row"],
+    ["10", "Supermans", "superman", "superman back extension"]]),
+  C("Cool down", "Stretch", 120, ["Open the hips and the front of the trunk"])
+]},
+
+/* ========== 10 ========== */
+{ id: "pump", name: "Upper body pump", mins: 45, tag: "Weights", blocks: [
+  C("Warm-up", "Ski erg", 180, ["Easy to moderate", "Shoulders warm before loading"]),
+  R("Bench + dumbbells", "Chest"),
+  W("Block 1", "Chest", 240, "3 rounds. Slow lowering, full stretch.", [
+    ["12", "DB bench press", "benchpress", "dumbbell bench press"],
+    ["12", "DB floor press", "benchpress", "dumbbell floor press"]]),
+  R("Cable stack", "Back"),
+  W("Block 2", "Back", 240, "3 rounds. Pull with the elbows.", [
+    ["12", "Lat pulldowns", "latpulldown", "lat pulldown"],
+    ["12", "Seated cable rows", "bentrow", "seated cable row"]]),
+  R("Move to the rower", "Rower intervals"),
+  C("Block 3", "Rower", 240, ["5 x 30s hard / 20s easy"]),
+  R("Dumbbells", "Shoulders"),
+  W("Block 4", "Shoulders", 240, "3 rounds. Light, high reps, no swinging.", [
+    ["12", "DB shoulder press", "shoulderpress", "seated dumbbell shoulder press"],
+    ["15", "DB lateral raises", "lateralraise", "dumbbell lateral raise"],
+    ["15", "Rear delt flyes", "reardelt", "bent over rear delt fly"]]),
+  R("TRX straps", "Bodyweight pull"),
+  W("Block 5", "TRX", 240, "3 rounds. Walk your feet forward to make it harder.", [
+    ["12", "TRX rows", "row", "TRX inverted row"],
+    ["10", "TRX Y-flyes", "trxyfly", "TRX Y fly"]]),
+  R("Move to the ski erg", "Ski erg intervals"),
+  C("Block 6", "Ski erg", 240, ["6 x 25s hard / 15s easy"]),
+  R("Dumbbells + cable", "Arms"),
+  W("Block 7", "Arms", 240, "3 rounds, superset. Chase the pump.", [
+    ["12", "DB bicep curls", "curl", "dumbbell bicep curl"],
+    ["12", "DB hammer curls", "hammercurl", "dumbbell hammer curl"],
+    ["15", "Cable pushdowns", "pushdown", "cable tricep pushdown"]]),
+  R("Cable stack", "Finisher"),
+  W("Block 8", "Finisher", 240, "Twice through, no rest.", [
+    ["20", "Face pulls", "facepull", "cable face pull"],
+    ["20", "Lateral raises", "lateralraise", "dumbbell lateral raise"]]),
+  C("Cool down", "Easy spin", 120, ["Loosen chest, lats and forearms"])
+]},
+
+/* ========== 11 ========== */
+{ id: "barbell", name: "Barbell strength", mins: 60, tag: "Weights", blocks: [
+  C("Warm-up", "Rower", 240, ["Easy building to moderate", "Then some empty-bar work"]),
+  R("Mat space", "Movement prep"),
+  W("Prep", "Movement prep", 300, "Slow. Get the hips and spine moving.", [
+    ["10", "Cat-cow", "catcow", "cat cow"],
+    ["8 each side", "World's greatest stretch", "worldsgreatest", "worlds greatest stretch"],
+    ["12", "Glute bridges", "bridge", "glute bridge"]]),
+  R("Barbell + rack", "Back squats"),
+  W("Block 1", "Squat", 300, "5 sets of 5. Build across the sets.", [
+    ["5 x 5", "Barbell back squats", "backsquat", "barbell back squat"]]),
+  R("Bench + barbell", "Bench press"),
+  W("Block 2", "Bench", 300, "5 sets of 5. Rest 60-75s.", [
+    ["5 x 5", "Barbell bench press", "benchpress", "barbell bench press"]]),
+  R("Barbell", "Deadlift pattern"),
+  W("Block 3", "Hinge", 300, "4 sets of 6. Controlled, no bouncing off the floor.", [
+    ["4 x 6", "Barbell Romanian deadlifts", "rdl", "barbell romanian deadlift"]]),
+  R("Move to the rower", "Rower intervals"),
+  C("Block 4", "Rower", 300, ["5 x 40s hard / 20s easy"]),
+  R("Barbell + rack", "Overhead press"),
+  W("Block 5", "Press", 300, "4 sets of 6. Squeeze the glutes, don't lean back.", [
+    ["4 x 6", "Barbell overhead press", "shoulderpress", "barbell overhead press"]]),
+  R("Barbell stays", "Rows"),
+  W("Block 6", "Row", 300, "4 sets of 8. Flat back throughout.", [
+    ["4 x 8", "Barbell bent-over rows", "bentrow", "barbell bent over row"]]),
+  R("Dumbbells + bench", "Accessories"),
+  W("Block 7", "Accessories", 300, "3 rounds.", [
+    ["10 each side", "DB split squats", "splitsquat", "dumbbell split squat"],
+    ["12", "DB hip thrusts", "hipthrust", "dumbbell hip thrust"],
+    ["15", "Face pulls", "facepull", "cable face pull"]]),
+  R("Mat space", "Core finisher"),
+  W("Block 8", "Core", 300, "Twice through.", [
+    ["45s", "Front plank", "frontplank", "front plank"],
+    ["10", "Hanging knee raises", "kneeraise", "hanging knee raise"],
+    ["20", "Dead bugs", "deadbug", "dead bug"]]),
+  C("Cool down", "Stretch", 120, ["Hips, hamstrings, chest and lats"])
+]},
+
+/* ========== 12 ========== */
+{ id: "longmix", name: "Long mixed endurance", mins: 60, tag: "Cardio", blocks: [
+  C("Warm-up", "Rower", 240, ["Easy building to moderate"]),
+  R("Stay on the rower", "Threshold work"),
+  C("Block 1", "Rower", 300, ["3 x 90s at threshold", "30s easy between"]),
+  R("Move to the ski erg", "Ski erg intervals"),
+  C("Block 2", "Ski erg", 300, ["10 x 20s hard / 10s easy"]),
+  R("Floor space", "Bodyweight break"),
+  W("Block 3", "Bodyweight", 300, "3 rounds, steady pace.", [
+    ["10", "Press-ups", "pressup", "push up"],
+    ["15", "Air squats", "squat", "bodyweight air squat"],
+    ["10", "Inchworms", "inchworm", "inchworm walkout"],
+    ["20", "Mountain climbers", "climber", "mountain climber"]]),
+  R("Move to the air bike", "Air bike intervals"),
+  C("Block 4", "Air bike", 300, ["5 x 45s hard / 15s easy"]),
+  R("Move to the stair climber", "Steady climbing"),
+  C("Block 5", "Stair climber", 300, ["Steady hard the whole block", "Heel down each step"]),
+  R("Kettlebell", "Swings"),
+  W("Block 6", "Swings", 300, "10 rounds of 20s work / 10s rest.", [
+    ["20s", "Kettlebell swings", "kbswing", "russian kettlebell swing"]]),
+  R("Move to the rower", "Sprint intervals"),
+  C("Block 7", "Rower", 300, ["8 x 20s sprint / 20s easy"]),
+  R("Heavy dumbbells", "Carries"),
+  W("Block 8", "Carry", 300, "5 rounds: 40s carry, 20s rest.", [
+    ["40s", "Farmer's carry", "farmers", "farmers carry dumbbell"]]),
+  R("Move to the ski erg", "Final push"),
+  C("Block 9", "Ski erg", 300, ["5 min continuous", "Hold the highest pace you can finish"]),
+  C("Cool down", "Easy spin", 120, ["Very easy, let the heart rate drop"])
+]},
+
+/* ========== 13 ========== */
+{ id: "trxcircuit", name: "TRX and bodyweight circuit", mins: 45, tag: "Bodyweight", blocks: [
+  C("Warm-up", "Air bike", 180, ["Easy building to moderate"]),
+  R("Set up the TRX", "TRX pulling"),
+  W("Block 1", "TRX pull", 240, "3 rounds. Walk your feet in to make it easier.", [
+    ["12", "TRX rows", "row", "TRX inverted row"],
+    ["10", "TRX Y-flyes", "trxyfly", "TRX Y fly"]]),
+  R("Straps stay set", "TRX core"),
+  W("Block 2", "TRX core", 240, "3 rounds. Ribs down, no sagging.", [
+    ["10", "TRX fallouts", "trxfallout", "TRX fallout"],
+    ["45s", "Front plank", "frontplank", "front plank"]]),
+  R("Move to the rower", "Rower intervals"),
+  C("Block 3", "Rower", 240, ["5 x 30s hard / 20s easy"]),
+  R("Floor space", "Push block"),
+  W("Block 4", "Push", 240, "3 rounds.", [
+    ["10", "Press-ups", "pressup", "push up"],
+    ["8", "Pike press-ups", "pike", "pike push up"],
+    ["10", "Inchworms", "inchworm", "inchworm walkout"]]),
+  R("Floor space + a box", "Leg block"),
+  W("Block 5", "Legs", 240, "3 rounds, controlled.", [
+    ["15", "Air squats", "squat", "bodyweight air squat"],
+    ["10 each side", "Reverse lunges", "lunge", "reverse lunge"],
+    ["12 each side", "Step-ups", "stepup", "bodyweight step up"]]),
+  R("Move to the ski erg", "Ski erg intervals"),
+  C("Block 6", "Ski erg", 240, ["6 x 25s hard / 15s easy"]),
+  R("Mat space", "Posterior chain"),
+  W("Block 7", "Posterior", 240, "3 rounds.", [
+    ["12", "Single-leg glute bridges", "bridge", "single leg glute bridge"],
+    ["10", "Supermans", "superman", "superman back extension"],
+    ["10 each side", "Bird dogs", "birddog", "bird dog exercise"]]),
+  R("Mat space", "Core finisher"),
+  W("Block 8", "Core", 240, "Twice through.", [
+    ["30s", "Hollow hold", "hollow", "hollow body hold"],
+    ["20", "Dead bugs", "deadbug", "dead bug"],
+    ["15", "Reverse crunches", "reversecrunch", "reverse crunch"]]),
+  C("Cool down", "Stretch", 120, ["Lats, chest and hip flexors"])
+]},
+
+/* ========== 14 ========== */
+{ id: "posterior", name: "Glutes and posterior chain", mins: 45, tag: "Weights", blocks: [
+  C("Warm-up", "Rower", 180, ["Easy building to moderate"]),
+  R("Mat space", "Glute activation"),
+  W("Warm-up 2", "Activation", 240, "Slow. Feel the glutes, not the lower back.", [
+    ["15", "Glute bridges", "bridge", "glute bridge"],
+    ["10 each side", "Bird dogs", "birddog", "bird dog exercise"],
+    ["8 each side", "World's greatest stretch", "worldsgreatest", "worlds greatest stretch"]]),
+  R("Barbell", "Hinge work"),
+  W("Block 1", "Hinge", 240, "4 sets of 8. Slow lowering, feel the stretch.", [
+    ["4 x 8", "Barbell Romanian deadlifts", "rdl", "barbell romanian deadlift"]]),
+  R("Bench + barbell", "Hip thrusts"),
+  W("Block 2", "Thrust", 240, "4 sets of 10. Two-second squeeze at the top.", [
+    ["4 x 10", "Barbell hip thrusts", "hipthrust", "barbell hip thrust"]]),
+  R("Move to the air bike", "Air bike intervals"),
+  C("Block 3", "Air bike", 240, ["4 x 40s hard / 20s easy"]),
+  R("Dumbbells + bench", "Single leg"),
+  W("Block 4", "Single leg", 240, "3 rounds. Controlled, no dropping.", [
+    ["10 each side", "DB split squats", "splitsquat", "dumbbell split squat"],
+    ["12 each side", "DB step-ups", "stepup", "dumbbell step up"]]),
+  R("Kettlebell", "Swings"),
+  W("Block 5", "Swings", 240, "8 rounds of 20s work / 10s rest.", [
+    ["20s", "Kettlebell swings", "kbswing", "russian kettlebell swing"]]),
+  R("Load the sled", "Sled drags"),
+  W("Block 6", "Sled", 240, "6 lengths backwards. Stay low.", [
+    ["6 lengths", "Backward sled drag", "sleddrag", "backward sled drag"]]),
+  R("Mat space", "Lower back and core"),
+  W("Block 7", "Back + core", 240, "Twice through.", [
+    ["12", "Supermans", "superman", "superman back extension"],
+    ["45s", "Front plank", "frontplank", "front plank"],
+    ["15", "Reverse crunches", "reversecrunch", "reverse crunch"]]),
+  C("Cool down", "Stretch", 120, ["Hamstrings, glutes and hip flexors", "Hold each for 30s"])
+]},
+
+/* ========== 15 ========== */
+{ id: "flow", name: "Dynamic movement flow", mins: 30, tag: "Dynamic", blocks: [
+  C("Warm-up", "Easy spin", 240, ["Bike or rower, easy", "Just raising the temperature"]),
+  W("Block 1", "Ground flow", 240, "Move continuously between them.", [
+    ["10", "Cat-cow", "catcow", "cat cow"],
+    ["8 each side", "Bird dogs", "birddog", "bird dog exercise"],
+    ["8", "Inchworms", "inchworm", "inchworm walkout"]]),
+  W("Block 2", "Hip flow", 240, "Slow, controlled, no bouncing.", [
+    ["10 each side", "90/90 hip switches", "ninetyninety", "90 90 hip switch"],
+    ["8 each side", "Cossack squats", "cossack", "cossack squat"],
+    ["8 each side", "World's greatest stretch", "worldsgreatest", "worlds greatest stretch"]]),
+  W("Block 3", "Loaded flow", 240, "3 rounds, light weight, smooth tempo.", [
+    ["10", "Kettlebell halos", "kbhalo", "kettlebell halo"],
+    ["12", "Sumo squats", "sumosquat", "kettlebell sumo squat"],
+    ["15", "Kettlebell swings", "kbswing", "russian kettlebell swing"]]),
+  W("Block 4", "Upper flow", 240, "3 rounds, no rushing.", [
+    ["10", "Press-ups", "pressup", "push up"],
+    ["10", "TRX rows", "row", "TRX inverted row"],
+    ["8 each side", "Open book rotations", "openbook", "open book thoracic rotation"]]),
+  W("Block 5", "Stability", 240, "Twice through.", [
+    ["12", "Single-leg glute bridges", "bridge", "single leg glute bridge"],
+    ["30s each side", "Side plank", "sideplank", "side plank"],
+    ["20", "Dead bugs", "deadbug", "dead bug"]]),
+  W("Block 6", "Long stretch", 240, "Hold each, breathe out into it.", [
+    ["45s", "Downward dog", "downdog", "downward dog"],
+    ["45s each side", "Hip flexor stretch", "hipflexor", "kneeling hip flexor stretch"],
+    ["45s", "Hamstring sweeps", "hamstringsweep", "standing hamstring stretch"]]),
+  C("Cool down", "Breathe", 120, ["Lie flat, slow nasal breathing"])
+]}
+
+];
+
+/* ---------- state ---------- */
+var S = null, i = 0, left = 0, gone = 0, TOT = 0;
+var on = false, t = null, ac = null, lock = null;
+var LOG_KEY = "gymlog_v1";
+
+function d(id) { return document.getElementById(id); }
+function mm(s) { var m = Math.floor(s / 60), r = s % 60; return (m < 10 ? "0" : "") + m + ":" + (r < 10 ? "0" : "") + r; }
+function ms(s) { var m = Math.floor(s / 60), r = s % 60; return m + ":" + (r < 10 ? "0" : "") + r; }
+function esc(x) { return String(x).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+/* ---------- history ---------- */
+function readLog() {
+  try { return JSON.parse(localStorage.getItem(LOG_KEY)) || {}; }
+  catch (e) { return {}; }
+}
+function writeLog(o) {
+  try { localStorage.setItem(LOG_KEY, JSON.stringify(o)); return true; }
+  catch (e) { return false; }
+}
+function addEntry(id, rpe) {
+  var l = readLog();
+  if (!l[id]) { l[id] = []; }
+  l[id].push({ d: new Date().toISOString().slice(0, 10), r: rpe });
+  return writeLog(l);
+}
+function statsFor(id) {
+  var l = readLog()[id] || [];
+  if (!l.length) { return null; }
+  var last = l[l.length - 1];
+  var sum = 0, n = 0;
+  for (var k = 0; k < l.length; k++) { if (l[k].r) { sum += l[k].r; n++; } }
+  return { count: l.length, last: last.d, avg: n ? (sum / n).toFixed(1) : null };
+}
+function niceDate(iso) {
+  var p = iso.split("-");
+  var mn = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return parseInt(p[2], 10) + " " + mn[parseInt(p[1], 10) - 1];
+}
+
+/* ---------- picker ---------- */
+function buildPicker() {
+  var h = "";
+  for (var k = 0; k < SESSIONS.length; k++) {
+    var s = SESSIONS[k], st = statsFor(s.id);
+    var suffix = st ? "  \u2713" + st.count : "";
+    h += '<option value="' + s.id + '">' + esc(s.name) + " \u00b7 " + s.mins + "min" + suffix + "</option>";
+  }
+  d("picker").innerHTML = h;
+}
+
+function renderHistory() {
+  var l = readLog(), rows = [], total = 0;
+  for (var k = 0; k < SESSIONS.length; k++) {
+    var s = SESSIONS[k], e = l[s.id];
+    if (e && e.length) {
+      total += e.length;
+      var last = e[e.length - 1];
+      rows.push({ name: s.name, n: e.length, date: last.d, rpe: last.r });
+    }
+  }
+  if (!rows.length) {
+    d("history").innerHTML = '<div class="empty">Nothing logged yet. Finish a session and it appears here.</div>';
+    d("histhead").textContent = "History";
+    return;
+  }
+  rows.sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+  var h = "";
+  for (var j = 0; j < rows.length; j++) {
+    var r = rows[j];
+    h += '<div class="hrow"><div><div>' + esc(r.name) + '</div><div class="sub">last ' + niceDate(r.date) +
+         (r.rpe ? " \u00b7 felt " + r.rpe + "/5" : "") + '</div></div><div class="hn">\u00d7' + r.n + '</div></div>';
+  }
+  h += '<button id="clearlog" class="ghost">Clear all history</button>';
+  d("history").innerHTML = h;
+  d("histhead").textContent = "History \u00b7 " + total + " session" + (total === 1 ? "" : "s") + " done";
+  d("clearlog").onclick = function () {
+    if (confirm("Delete all saved session history?")) {
+      try { localStorage.removeItem(LOG_KEY); } catch (e) {}
+      buildPicker(); renderHistory();
+    }
+  };
+}
+
+/* ---------- audio + wake ---------- */
+function beep(f, len) {
+  try {
+    if (!ac) { ac = new (window.AudioContext || window.webkitAudioContext)(); }
+    if (ac.state === "suspended") { ac.resume(); }
+    var o = ac.createOscillator(), g = ac.createGain();
+    o.connect(g); g.connect(ac.destination);
+    o.type = "sine"; o.frequency.value = f;
+    g.gain.setValueAtTime(0.3, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + len);
+    o.start(); o.stop(ac.currentTime + len);
+  } catch (e) {}
+}
+function wake() {
+  if (!("wakeLock" in navigator)) {
+    d("awake").textContent = "This browser can't hold the screen on \u2014 set auto-lock to Never in your phone settings.";
+    return;
+  }
+  navigator.wakeLock.request("screen").then(function (l) {
+    lock = l;
+    d("awake").textContent = "Screen locked awake.";
+    d("awake").className = "awake on";
+    l.addEventListener("release", function () { lock = null; });
+  }).catch(function () {
+    d("awake").textContent = "Screen lock refused \u2014 set auto-lock to Never instead.";
+  });
+}
+function dropWake() {
+  if (lock) { try { lock.release(); } catch (e) {} lock = null; }
+}
+document.addEventListener("visibilitychange", function () {
+  if (document.visibilityState === "visible" && on && !lock) { wake(); }
+});
+
+/* ---------- render ---------- */
+function drawMoves() {
+  var b = S.blocks[i], h = "";
+  if (b.moves) {
+    for (var k = 0; k < b.moves.length; k++) {
+      var m = b.moves[k];
+      h += '<div class="move">' + (ART[m[2]] || "") +
+        '<div class="txt"><span class="qty">' + esc(m[0]) + '</span> ' + esc(m[1]) +
+        '<a class="how" href="' + yt(m[3]) + '" target="_blank" rel="noopener">Watch how &rsaquo;</a></div></div>';
+    }
+    if (b.note) { h += '<div class="plainline">' + esc(b.note) + '</div>'; }
+  } else if (b.rest) {
+    h = '<div class="nextup">Up next: ' + esc(b.next) + '</div>';
+  } else {
+    for (var j = 0; j < b.lines.length; j++) { h += '<div class="plainline">' + esc(b.lines[j]) + '</div>'; }
+  }
+  d("moves").innerHTML = h;
+}
+
+function drawPlan() {
+  var h = "";
+  for (var k = 0; k < S.blocks.length; k++) {
+    var b = S.blocks[k], base = b.rest ? "row brk" : "row";
+    var cls = k === i ? base + " now" : (k < i ? base + " past" : base);
+    var sub = b.rest ? "" : '<div class="sub">' + esc(b.r) + "</div>";
+    h += '<div class="' + cls + '"><div>' + esc(b.w) + sub + "</div><div>" + ms(b.s) + "</div></div>";
+  }
+  d("plan").innerHTML = h;
+}
+
+function draw() {
+  var b = S.blocks[i];
+  d("card").className = b.rest ? "card rest" : "card";
+  d("round").textContent = b.r;
+  d("where").textContent = b.w;
+  d("clock").textContent = mm(left);
+  d("clock").className = (left <= 10 && on) ? "clock hot" : "clock";
+  d("bar").style.width = Math.round((gone / TOT) * 100) + "%";
+  d("gone").textContent = ms(gone) + " elapsed";
+  d("togo").textContent = ms(TOT - gone) + " to go";
+}
+
+/* ---------- flow ---------- */
+function load(id) {
+  for (var k = 0; k < SESSIONS.length; k++) { if (SESSIONS[k].id === id) { S = SESSIONS[k]; } }
+  if (!S) { S = SESSIONS[0]; }
+  TOT = 0;
+  for (var j = 0; j < S.blocks.length; j++) { TOT += S.blocks[j].s; }
+  on = false;
+  if (t) { clearInterval(t); t = null; }
+  dropWake();
+  i = 0; left = S.blocks[0].s; gone = 0;
+  d("go").textContent = "Start";
+  d("rate").style.display = "none";
+  d("awake").className = "awake";
+  d("awake").textContent = "Screen will stay awake once started.";
+  var st = statsFor(S.id);
+  d("tagline").textContent = S.tag + " \u00b7 " + S.mins + " min" +
+    (st ? " \u00b7 done " + st.count + "\u00d7, last " + niceDate(st.last) : " \u00b7 not done yet");
+  drawPlan(); drawMoves(); draw();
+}
+
+function finish() {
+  on = false;
+  if (t) { clearInterval(t); t = null; }
+  dropWake();
+  d("go").textContent = "Start again";
+  d("card").className = "card";
+  d("round").textContent = "Session complete";
+  d("where").textContent = S.name;
+  d("clock").textContent = "00:00";
+  d("moves").innerHTML = '<div class="plainline">Well done. Stretch what worked hardest.</div>';
+  d("rate").style.display = "block";
+  beep(660, 0.9);
+}
+
+function jump(n) {
+  var next = i + n;
+  if (next < 0) { return; }
+  if (next >= S.blocks.length) { gone = TOT; draw(); finish(); return; }
+  if (n > 0) { gone += left; }
+  else { gone = gone - (S.blocks[i].s - left) - S.blocks[next].s; if (gone < 0) { gone = 0; } }
+  i = next; left = S.blocks[i].s;
+  beep(S.blocks[i].rest ? 520 : 880, 0.45);
+  drawPlan(); drawMoves(); draw();
+}
+
+function step() {
+  if (!on) { return; }
+  left--; gone++;
+  if (left === 3 || left === 2 || left === 1) { beep(660, 0.12); }
+  if (left <= 0) {
+    if (i >= S.blocks.length - 1) { draw(); finish(); return; }
+    i++; left = S.blocks[i].s;
+    beep(S.blocks[i].rest ? 520 : 880, 0.45);
+    drawPlan(); drawMoves();
+  }
+  draw();
+}
+
+/* ---------- wiring ---------- */
+d("picker").onchange = function () { load(this.value); };
+
+d("go").onclick = function () {
+  if (d("rate").style.display === "block") { load(S.id); return; }
+  on = !on;
+  this.textContent = on ? "Pause" : "Resume";
+  if (on) { beep(880, 0.2); wake(); if (!t) { t = setInterval(step, 1000); } }
+  else { dropWake(); d("awake").className = "awake"; d("awake").textContent = "Paused \u2014 screen may sleep."; }
+  draw();
+};
+d("skip").onclick = function () { jump(1); };
+d("back").onclick = function () { jump(-1); };
+d("reset").onclick = function () { load(S.id); };
+
+/* ---------- server sync ---------- */
+var KEY_STORE = "gymkey_v1";
+var syncState = "idle";
+
+function authKey() { try { return localStorage.getItem(KEY_STORE) || ""; } catch (e) { return ""; } }
+function setAuthKey(k) { try { localStorage.setItem(KEY_STORE, k); } catch (e) {} }
+
+function setSync(msg, cls) {
+  var el = d("sync");
+  el.textContent = msg;
+  el.className = "sync" + (cls ? " " + cls : "");
+}
+
+/* local store {id:[{d,r}]} <-> server list [{session,date,rpe}] */
+function localToList() {
+  var l = readLog(), out = [];
+  for (var id in l) {
+    if (!l.hasOwnProperty(id)) { continue; }
+    for (var k = 0; k < l[id].length; k++) {
+      out.push({ session: id, date: l[id][k].d, rpe: l[id][k].r });
+    }
+  }
+  return out;
+}
+function listToLocalShape(list) {
+  var o = {};
+  for (var k = 0; k < list.length; k++) {
+    var e = list[k];
+    if (!e || !e.session || !e.date) { continue; }
+    if (!o[e.session]) { o[e.session] = []; }
+    o[e.session].push({ d: e.date, r: e.rpe });
+  }
+  return o;
+}
+function entryKey(e) { return e.session + "|" + e.date + "|" + e.rpe; }
+
+function api(method, body, cb) {
+  var x = new XMLHttpRequest();
+  x.open(method, "/api/log", true);
+  x.setRequestHeader("Content-Type", "application/json");
+  var k = authKey();
+  if (k) { x.setRequestHeader("x-gym-key", k); }
+  x.timeout = 8000;
+  x.onload = function () {
+    if (x.status === 401) { return cb("auth"); }
+    if (x.status < 200 || x.status >= 300) { return cb("http " + x.status); }
+    try { cb(null, JSON.parse(x.responseText)); }
+    catch (e) { cb("bad response"); }
+  };
+  x.onerror = function () { cb("offline"); };
+  x.ontimeout = function () { cb("timeout"); };
+  x.send(body ? JSON.stringify(body) : null);
+}
+
+function syncNow(quiet) {
+  if (syncState === "busy") { return; }
+  syncState = "busy";
+  if (!quiet) { setSync("Syncing\u2026"); }
+  api("GET", null, function (err, data) {
+    if (err === "auth") {
+      syncState = "idle";
+      setSync("Log needs a key. Tap to enter it.", "warn");
+      d("sync").onclick = askKey;
+      return;
+    }
+    if (err) {
+      syncState = "idle";
+      setSync("Offline \u2014 saved on this phone, will sync later.", "warn");
+      return;
+    }
+    var server = data.entries || [];
+    /* pull server entries into local */
+    mergeLog(listToLocalShape(server));
+    /* push anything local that the server hasn't got */
+    var have = {};
+    for (var a = 0; a < server.length; a++) { have[entryKey(server[a])] = 1; }
+    var push = [];
+    var mine = localToList();
+    for (var b = 0; b < mine.length; b++) {
+      if (!have[entryKey(mine[b])]) { push.push(mine[b]); }
+    }
+    if (!push.length) {
+      syncState = "idle";
+      setSync("Synced \u00b7 " + server.length + " session" + (server.length === 1 ? "" : "s") + " on the server", "ok");
+      buildPicker(); d("picker").value = S.id; renderHistory();
+      return;
+    }
+    api("POST", push, function (e2, res) {
+      syncState = "idle";
+      if (e2) {
+        setSync("Saved here, server push failed \u2014 will retry.", "warn");
+      } else {
+        var n = (res.entries || []).length;
+        setSync("Synced \u00b7 " + n + " session" + (n === 1 ? "" : "s") + " on the server", "ok");
+      }
+      buildPicker(); d("picker").value = S.id; renderHistory();
+    });
+  });
+}
+
+function askKey() {
+  var k = prompt("Enter the log key (GYM_KEY):", "");
+  if (k === null) { return; }
+  setAuthKey(k.trim());
+  d("sync").onclick = null;
+  syncNow();
+}
+
+/* ---------- backup / restore ---------- */
+function mergeLog(incoming) {
+  var cur = readLog(), added = 0;
+  for (var id in incoming) {
+    if (!incoming.hasOwnProperty(id)) { continue; }
+    if (!cur[id]) { cur[id] = []; }
+    var seen = {};
+    for (var a = 0; a < cur[id].length; a++) { seen[cur[id][a].d + "|" + cur[id][a].r] = 1; }
+    for (var b = 0; b < incoming[id].length; b++) {
+      var e = incoming[id][b];
+      if (!e || !e.d) { continue; }
+      var key = e.d + "|" + e.r;
+      if (!seen[key]) { cur[id].push({ d: e.d, r: e.r }); seen[key] = 1; added++; }
+    }
+    cur[id].sort(function (x, y) { return x.d < y.d ? -1 : 1; });
+  }
+  return writeLog(cur) ? added : -1;
+}
+
+d("showbackup").onclick = function () {
+  var box = d("backupbox");
+  box.style.display = "block";
+  box.value = JSON.stringify(readLog());
+  box.focus(); box.select();
+  d("backupmsg").textContent = "Copy this somewhere safe \u2014 a note, an email to yourself.";
+};
+
+d("showrestore").onclick = function () {
+  d("restorewrap").style.display = "block";
+  d("restorebox").focus();
+};
+
+d("dorestore").onclick = function () {
+  var txt = d("restorebox").value.trim();
+  if (!txt) { d("backupmsg").textContent = "Paste a backup code first."; return; }
+  var parsed;
+  try { parsed = JSON.parse(txt); }
+  catch (e) { d("backupmsg").textContent = "That isn't a valid backup code."; return; }
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+    d("backupmsg").textContent = "That isn't a valid backup code."; return;
+  }
+  var n = mergeLog(parsed);
+  if (n < 0) { d("backupmsg").textContent = "Couldn't save \u2014 storage is blocked in this browser."; return; }
+  d("backupmsg").textContent = n === 0 ? "Nothing new to add \u2014 already up to date." : "Restored " + n + " entr" + (n === 1 ? "y" : "ies") + ".";
+  d("restorebox").value = "";
+  buildPicker(); d("picker").value = S.id; renderHistory();
+};
+
+var rateBtns = document.querySelectorAll("#rate button");
+for (var b = 0; b < rateBtns.length; b++) {
+  rateBtns[b].onclick = function () {
+    var rpe = parseInt(this.getAttribute("data-r"), 10);
+    var saved = addEntry(S.id, rpe);
+    d("rate").innerHTML = saved
+      ? '<div class="saved">Logged.</div>'
+      : '<div class="saved warn">Couldn\'t save on this phone \u2014 sending to the server instead.</div>';
+    buildPicker();
+    d("picker").value = S.id;
+    renderHistory();
+    syncNow(true);
+  };
+}
+
+d("resync").onclick = function () { syncNow(); };
+
+buildPicker();
+renderHistory();
+load(SESSIONS[0].id);
+syncNow();
+window.addEventListener("online", function () { syncNow(true); });
+document.addEventListener("visibilitychange", function () {
+  if (document.visibilityState === "visible" && !on) { syncNow(true); }
+});
+
+</script>
+</body>
+</html>

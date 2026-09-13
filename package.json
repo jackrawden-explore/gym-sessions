@@ -1,0 +1,13 @@
+{
+  "name": "gym-sessions",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Gym session timer with a persistent server-side log",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
