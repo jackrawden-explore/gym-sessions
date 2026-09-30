@@ -49,6 +49,11 @@ select {
 .plainline { padding: 9px 0; border-top: 1px solid #2C2924; font-size: 15px; }
 .card.rest .plainline { border-top-color: #24332B; }
 .nextup { padding: 9px 0; border-top: 1px solid #24332B; font-size: 15px; color: #7FC79B; }
+.card.rest .pre { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-top: 1px solid #24332B; }
+.card.rest .pre svg { flex: 0 0 58px; width: 58px; height: 42px; color: #9FBFAD; }
+.card.rest .pre .txt { font-size: 14px; min-width: 0; }
+.card.rest .pre .qty { color: #7FC79B; }
+.card.rest .prenote { padding: 7px 0; border-top: 1px solid #24332B; font-size: 13px; color: #8E8A7E; }
 
 button {
   font-family: inherit; font-size: 16px; color: #F2EFE6;
@@ -967,6 +972,174 @@ var SESSIONS = [
     ["45s each side", "Hip flexor stretch", "hipflexor", "kneeling hip flexor stretch"],
     ["45s", "Hamstring sweeps", "hamstringsweep", "standing hamstring stretch"]]),
   C("Cool down", "Breathe", 120, ["Lie flat, slow nasal breathing"])
+]},
+/* ========== 16 ========== */
+{ id: "dbfull2", name: "Full body dumbbells II", mins: 45, tag: "Full body", blocks: [
+  C("Warm-up", "Rower", 180, ["Easy building to moderate", "Long strokes, drive with the legs"]),
+  R("Move to the ski erg", "Ski erg intervals"),
+  C("Round 1", "Ski erg", 240, ["6 x 30s hard / 10s easy", "Drive with hips and lats"]),
+  R("Dumbbells + bench", "Push block"),
+  W("Round 1", "Push", 240, "3 rounds. Slow lowering on the presses.", [
+    ["12", "DB floor press", "benchpress", "dumbbell floor press"],
+    ["10", "DB shoulder press", "shoulderpress", "seated dumbbell shoulder press"],
+    ["15", "DB lateral raises", "lateralraise", "dumbbell lateral raise"]]),
+  R("Move to the rower", "Rower intervals"),
+  C("Round 2", "Rower", 240, ["4 x 45s hard / 15s easy"]),
+  R("Dumbbells", "Pull block"),
+  W("Round 2", "Pull", 240, "3 rounds. Pull with the elbow, not the hand.", [
+    ["12 each side", "DB bent-over rows", "bentrow", "dumbbell bent over row"],
+    ["12", "DB hammer curls", "hammercurl", "dumbbell hammer curl"],
+    ["15", "Rear delt flyes", "reardelt", "bent over rear delt fly"]]),
+  R("Move to the air bike", "Air bike intervals"),
+  C("Round 3", "Air bike", 240, ["4 x 30s hard / 30s easy"]),
+  R("Dumbbells + a box", "Leg block"),
+  W("Round 3", "Legs", 240, "3 rounds. Raise the front heel on the step-ups if the left ankle is tight.", [
+    ["12", "DB Romanian deadlifts", "rdl", "dumbbell romanian deadlift"],
+    ["15", "DB sumo squats", "sumosquat", "dumbbell sumo squat"],
+    ["12 each side", "DB step-ups", "stepup", "dumbbell step up"]]),
+  R("Move to the stair climber", "Steady climbing"),
+  C("Round 4", "Stair climber", 240, ["Steady hard, no hands on the rails", "Heel down on each step"]),
+  R("Heavy dumbbells + mat", "Carry and core finisher"),
+  W("Round 4", "Carry + core", 240, "Twice through. Grip should be the limit on the carry.", [
+    ["40s", "Farmer's carry", "farmers", "farmers carry dumbbell"],
+    ["8 each side", "Renegade rows", "renegade", "renegade row"],
+    ["20", "Weighted Russian twists", "russian", "weighted russian twist"]]),
+  C("Cool down", "Easy spin", 120, ["Loosen calves, lats and hip flexors"])
+]},
+
+/* ========== 17 ========== */
+{ id: "kbfull", name: "Kettlebell full body", mins: 45, tag: "Full body", blocks: [
+  C("Warm-up", "Rower", 180, ["Easy building to moderate", "Open the hips"]),
+  R("Stay on the rower", "Rower intervals"),
+  C("Round 1", "Rower", 240, ["4 x 45s hard / 15s easy"]),
+  R("One kettlebell", "Swings and pressing"),
+  W("Round 1", "Swing + press", 240, "3 rounds. Snap the hips, don't squat the swing.", [
+    ["20", "Kettlebell swings", "kbswing", "russian kettlebell swing"],
+    ["8 each side", "KB single-arm press", "shoulderpress", "kettlebell single arm press"],
+    ["10", "Kettlebell halos", "kbhalo", "kettlebell halo"]]),
+  R("Move to the ski erg", "Ski erg intervals"),
+  C("Round 2", "Ski erg", 240, ["8 x 20s hard / 10s easy"]),
+  R("One kettlebell", "Pull and hinge"),
+  W("Round 2", "Pull + hinge", 240, "3 rounds. Flat back on everything.", [
+    ["10 each side", "KB single-arm rows", "bentrow", "kettlebell single arm row"],
+    ["12", "KB Romanian deadlifts", "rdl", "kettlebell romanian deadlift"],
+    ["15", "Kettlebell swings", "kbswing", "russian kettlebell swing"]]),
+  R("Move to the air bike", "Air bike intervals"),
+  C("Round 3", "Air bike", 240, ["4 x 40s hard / 20s easy"]),
+  R("Kettlebell + bench", "Leg block"),
+  W("Round 3", "Legs", 240, "3 rounds. Step back into the split squat, never drop into it.", [
+    ["15", "KB sumo squats", "sumosquat", "kettlebell sumo squat"],
+    ["10 each side", "KB split squats", "splitsquat", "kettlebell split squat"],
+    ["12", "KB hip thrusts", "hipthrust", "kettlebell hip thrust"]]),
+  R("Move to the stair climber", "Steady climbing"),
+  C("Round 4", "Stair climber", 240, ["Steady hard the whole block", "Heel down on each step"]),
+  R("Two kettlebells + mat", "Carry and core finisher"),
+  W("Round 4", "Carry + core", 240, "Twice through.", [
+    ["40s", "Front rack carry", "kbcarry", "kettlebell front rack carry"],
+    ["45s", "Front plank", "frontplank", "front plank"],
+    ["20", "Dead bugs", "deadbug", "dead bug"]]),
+  C("Cool down", "Stretch", 120, ["Hamstrings, lats and forearms"])
+]},
+
+/* ========== 18 ========== */
+{ id: "complexes", name: "Dumbbell and kettlebell complexes", mins: 45, tag: "Full body", blocks: [
+  C("Warm-up", "Rower", 180, ["Easy building to moderate"]),
+  R("Stay on the rower", "Rower intervals"),
+  C("Round 1", "Rower", 240, ["5 x 30s hard / 20s easy"]),
+  R("One pair of dumbbells", "Complex A"),
+  W("Round 1", "Complex A", 240, "Straight through without putting the bells down. Rest, then repeat.", [
+    ["8", "DB Romanian deadlifts", "rdl", "dumbbell romanian deadlift"],
+    ["8", "DB bent-over rows", "bentrow", "dumbbell bent over row"],
+    ["8", "DB thrusters", "thruster", "dumbbell thruster"]]),
+  R("Move to the ski erg", "Ski erg intervals"),
+  C("Round 2", "Ski erg", 240, ["6 x 25s hard / 15s easy"]),
+  R("One kettlebell", "Complex B"),
+  W("Round 2", "Complex B", 240, "Straight through, one bell, no rest inside the round.", [
+    ["15", "Kettlebell swings", "kbswing", "russian kettlebell swing"],
+    ["10", "KB sumo squats", "sumosquat", "kettlebell sumo squat"],
+    ["8", "Kettlebell halos", "kbhalo", "kettlebell halo"]]),
+  R("Move to the air bike", "Air bike intervals"),
+  C("Round 3", "Air bike", 240, ["4 x 30s hard / 30s easy"]),
+  R("Dumbbells + floor space", "Complex C"),
+  W("Round 3", "Complex C", 240, "Straight through. Slower than you think.", [
+    ["8 each side", "Renegade rows", "renegade", "renegade row"],
+    ["10", "Press-ups", "pressup", "push up"],
+    ["10 each side", "DB reverse lunges", "lunge", "dumbbell reverse lunge"]]),
+  R("Move to the stair climber", "Steady climbing"),
+  C("Round 4", "Stair climber", 240, ["Steady hard, no hands on the rails"]),
+  R("Heavy dumbbells + mat", "Finisher"),
+  W("Round 4", "Finisher", 240, "Twice through. Nothing left after this.", [
+    ["40s", "Farmer's carry", "farmers", "farmers carry dumbbell"],
+    ["20", "Weighted Russian twists", "russian", "weighted russian twist"],
+    ["30s", "Hollow hold", "hollow", "hollow body hold"]]),
+  C("Cool down", "Easy spin", 120, ["Loosen forearms, lats and hips"])
+]},
+
+/* ========== 19 ========== */
+{ id: "fullcarry", name: "Full body pump and carries", mins: 45, tag: "Full body", blocks: [
+  C("Warm-up", "Ski erg", 180, ["Easy to moderate", "Shoulders warm before loading"]),
+  R("Stay on the ski erg", "Ski erg intervals"),
+  C("Round 1", "Ski erg", 240, ["6 x 30s hard / 10s easy"]),
+  R("Dumbbells + bench", "Push block"),
+  W("Round 1", "Push", 240, "3 rounds. Full stretch at the bottom.", [
+    ["12", "DB bench press", "benchpress", "dumbbell bench press"],
+    ["10", "Pike press-ups", "pike", "pike push up"],
+    ["15", "DB lateral raises", "lateralraise", "dumbbell lateral raise"]]),
+  R("Move to the rower", "Rower intervals"),
+  C("Round 2", "Rower", 240, ["4 x 45s hard / 15s easy"]),
+  R("Bar + dumbbells + cable", "Pull block"),
+  W("Round 2", "Pull", 240, "3 rounds. Squeeze at the top of every rep.", [
+    ["12", "Inverted rows", "row", "inverted row smith machine"],
+    ["12", "DB bicep curls", "curl", "dumbbell bicep curl"],
+    ["15", "Face pulls", "facepull", "cable face pull"]]),
+  R("Move to the air bike", "Air bike intervals"),
+  C("Round 3", "Air bike", 240, ["4 x 40s hard / 20s easy"]),
+  R("Dumbbells + mat", "Leg block"),
+  W("Round 3", "Legs", 240, "3 rounds. Two-second pause at the top of the bridges.", [
+    ["12", "DB Romanian deadlifts", "rdl", "dumbbell romanian deadlift"],
+    ["12", "DB sumo squats", "sumosquat", "dumbbell sumo squat"],
+    ["12", "Single-leg glute bridges", "bridge", "single leg glute bridge"]]),
+  R("Move to the stair climber", "Steady climbing"),
+  C("Round 4", "Stair climber", 240, ["Steady hard, no hands on the rails", "Heel down on each step"]),
+  R("Heavy dumbbells + kettlebells", "Carry medley"),
+  W("Round 5", "Carry medley", 240, "4 rounds: 40s carry, 20s rest. Alternate the two.", [
+    ["40s", "Farmer's carry", "farmers", "farmers carry dumbbell"],
+    ["40s", "Front rack carry", "kbcarry", "kettlebell front rack carry"]]),
+  C("Cool down", "Stretch", 120, ["Lats, chest, forearms and hips"])
+]},
+
+/* ========== 20 ========== */
+{ id: "fullcircuit", name: "Full body circuit", mins: 45, tag: "Full body", blocks: [
+  C("Warm-up", "Rower", 180, ["Easy building to moderate"]),
+  R("Stay on the rower", "Rower intervals"),
+  C("Round 1", "Rower", 240, ["4 x 45s hard / 15s easy"]),
+  R("Dumbbells + kettlebell", "Circuit A"),
+  W("Round 1", "Circuit A", 240, "3 rounds, minimal rest.", [
+    ["10", "DB thrusters", "thruster", "dumbbell thruster"],
+    ["12", "DB bent-over rows", "bentrow", "dumbbell bent over row"],
+    ["15", "Kettlebell swings", "kbswing", "russian kettlebell swing"]]),
+  R("Move to the ski erg", "Ski erg intervals"),
+  C("Round 2", "Ski erg", 240, ["8 x 20s hard / 10s easy"]),
+  R("Floor space + a box", "Circuit B"),
+  W("Round 2", "Circuit B", 240, "3 rounds. Controlled on the step-ups.", [
+    ["10", "Press-ups", "pressup", "push up"],
+    ["12 each side", "DB step-ups", "stepup", "dumbbell step up"],
+    ["20", "Mountain climbers", "climber", "mountain climber"]]),
+  R("Move to the air bike", "Air bike intervals"),
+  C("Round 3", "Air bike", 240, ["4 x 30s hard / 30s easy"]),
+  R("Dumbbells + bench", "Circuit C"),
+  W("Round 3", "Circuit C", 240, "3 rounds. Heaviest block — take the extra breath.", [
+    ["12", "DB Romanian deadlifts", "rdl", "dumbbell romanian deadlift"],
+    ["10 each side", "DB split squats", "splitsquat", "dumbbell split squat"],
+    ["12", "DB sumo squats", "sumosquat", "dumbbell sumo squat"]]),
+  R("Move to the stair climber", "Steady climbing"),
+  C("Round 4", "Stair climber", 240, ["Steady hard the whole block", "Heel down on each step"]),
+  R("Dumbbells + mat", "Circuit D"),
+  W("Round 5", "Circuit D", 240, "Twice through.", [
+    ["8 each side", "Renegade rows", "renegade", "renegade row"],
+    ["20", "Dead bugs", "deadbug", "dead bug"],
+    ["45s", "Front plank", "frontplank", "front plank"]]),
+  C("Cool down", "Stretch", 120, ["Hips, hamstrings and lats"])
 ]}
 
 ];
@@ -1089,6 +1262,25 @@ document.addEventListener("visibilitychange", function () {
 });
 
 /* ---------- render ---------- */
+function previewNext() {
+  var b = S.blocks[i], nb = S.blocks[i + 1];
+  var h = '<div class="nextup">Up next: ' + esc(b.next) + '</div>';
+  if (!nb) { return h; }
+  if (nb.moves) {
+    for (var k = 0; k < nb.moves.length; k++) {
+      var m = nb.moves[k];
+      h += '<div class="pre">' + (ART[m[2]] || "") +
+        '<div class="txt"><span class="qty">' + esc(m[0]) + '</span> ' + esc(m[1]) + '</div></div>';
+    }
+    if (nb.note) { h += '<div class="prenote">' + esc(nb.note) + '</div>'; }
+  } else if (nb.lines) {
+    for (var j = 0; j < nb.lines.length; j++) {
+      h += '<div class="prenote">' + esc(nb.lines[j]) + '</div>';
+    }
+  }
+  return h;
+}
+
 function drawMoves() {
   var b = S.blocks[i], h = "";
   if (b.moves) {
@@ -1100,7 +1292,7 @@ function drawMoves() {
     }
     if (b.note) { h += '<div class="plainline">' + esc(b.note) + '</div>'; }
   } else if (b.rest) {
-    h = '<div class="nextup">Up next: ' + esc(b.next) + '</div>';
+    h = previewNext();
   } else {
     for (var j = 0; j < b.lines.length; j++) { h += '<div class="plainline">' + esc(b.lines[j]) + '</div>'; }
   }
